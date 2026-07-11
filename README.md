@@ -2,6 +2,7 @@
 
 > A modular, orchestration-driven framework for initializing projects through structured discovery, adaptive validation, and automated PRD generation. Designed as a model-agnostic foundation for AI-assisted project execution.
 
+> **Note:** This repository contains no executable code. It's a Markdown specification meant to be given to an AI agent (Claude, GPT, etc.) as context — a methodology for the agent to follow before starting a project, not a piece of software to install or run.
 ---
 
 # Why this project exists
