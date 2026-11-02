@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    { "id": "n1", "label": "Freelance designers", "type": "knowledge", "text": "Segment: freelance designers that manage clients and invoicing alone.", "tags": ["segment", "designers"] },
+    { "id": "n2", "label": "saas-mvp-scoping", "type": "skill", "text": "Skill to scope a SaaS MVP for freelancers." },
+    { "id": "n3", "label": "Invoicing pain", "type": "knowledge", "text": "Invoicing is the most painful task reported in interviews.", "tags": ["invoicing"] }
+  ],
+  "edges": [
+    { "source": "n1", "target": "n3", "type": "has_pain" },
+    { "source": "n2", "target": "n1", "type": "targets" }
+  ]
+}

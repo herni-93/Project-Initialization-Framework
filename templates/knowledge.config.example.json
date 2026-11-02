@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "sources": [
+    { "type": "markdown", "location": "~/brain" },
+    { "type": "json-graph", "location": "~/brain/graph.json" },
+    {
+      "type": "neo4j",
+      "location": "http://localhost:7474",
+      "database": "neo4j",
+      "user_env": "NEO4J_USER",
+      "password_env": "NEO4J_PASSWORD"
+    }
+  ]
+}

@@ -1,62 +1,56 @@
-# Contributing Guide
+# Guía de contribución
 
-Thank you for your interest in contributing to the Project Initialization Framework.
+Gracias por contribuir al Project Initialization Framework.
+Cada componente tiene una responsabilidad clara; las contribuciones tienen que respetar eso.
 
-This project follows a modular architecture where every component must have a clear responsibility.
+## Convención de idiomas
 
----
+| Qué | Idioma |
+| --- | --- |
+| Instrucciones para la IA: `AGENTS.md`, `CLAUDE.md`, `modules/`, `templates/` | Inglés |
+| Código, comentarios y tests: `pif/`, `tests/` | Inglés |
+| Documentación para personas: `README.md`, `docs/`, `examples/*.md`, este archivo, `CHANGELOG.md` | Español |
 
-# Development Principles
+Los nombres de archivo van en minúsculas y con guiones, sin espacios.
 
-Before adding new functionality:
+## Principios
 
-- Define the responsibility clearly.
-- Avoid overlapping existing components.
-- Preserve deterministic workflow.
-- Keep components independent.
-- Update documentation accordingly.
+Antes de agregar funcionalidad:
 
----
+- Definí la responsabilidad con claridad.
+- No te superpongas con un componente existente.
+- Mantené el flujo determinista: los estados y transiciones nuevos van en `pif/states.py`,
+  `modules/project-orchestrator.md` y `docs/maquina-de-estados.md`, siempre juntos.
+- Mantené los componentes independientes.
+- No agregues dependencias externas a `pif/` (solo librería estándar).
 
-# Adding New Components
+## Componentes nuevos
 
-New components should:
+Un componente nuevo debe:
 
-- Have a single responsibility.
-- Be invoked through the Project Orchestrator.
-- Return control after completing their task.
-- Avoid modifying unrelated workflows.
+- tener una sola responsabilidad;
+- ser invocado a través de la cadena de orquestación;
+- devolver el control al terminar;
+- no modificar flujos ajenos.
 
----
+Y debe incluir:
 
-# Documentation
+- `modules/<nombre>.md` (en inglés) con frontmatter YAML válido: `id`, `name`, `version`, `type`,
+  `status`, `description`, `invoked_by`, `delegates_to`, `inputs`, `outputs`;
+- su descripción en `docs/responsabilidades-de-modulos.md` (en español);
+- implementación y tests en `pif/` y `tests/` si cambia el comportamiento.
 
-Every new component should include:
+## Antes de abrir un pull request
 
-- Purpose
-- Responsibility
-- Inputs
-- Outputs
-- Dependencies
-- Workflow interaction
+- [ ] `python -m unittest discover -s tests` pasa.
+- [ ] La documentación en español y las instrucciones en inglés dicen lo mismo.
+- [ ] No hay contradicciones entre módulos (quién invoca a quién, quién cambia el estado).
+- [ ] `CHANGELOG.md` actualizado.
+- [ ] Explicaste las decisiones de arquitectura.
 
----
+## Filosofía
 
-# Pull Requests
-
-Before submitting changes:
-
-- Ensure documentation is updated.
-- Verify existing workflows still make sense.
-- Explain architectural decisions.
-
----
-
-# Design Philosophy
-
-The framework prioritizes:
-
-- Understanding before execution.
-- Explicit validation.
-- Modular architecture.
-- Minimal assumptions.
+- Entender antes de ejecutar.
+- Validación explícita.
+- Arquitectura modular.
+- Mínimos supuestos.

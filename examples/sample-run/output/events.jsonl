@@ -1,0 +1,23 @@
+{"ts": "2026-11-02T14:57:58+00:00", "type": "request_received", "request": "Quiero construir una plataforma SaaS para diseñadores freelance", "framework_version": "2.1.0"}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "state_transition", "from": "waiting", "to": "bootstrap", "reason": "request received"}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "bootstrap_assessment", "project_type": "software", "clarity": 20, "knowledge_status": "connected"}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "state_transition", "from": "bootstrap", "to": "discovery", "reason": "uncertainty too high: discovery required"}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "answer_recorded", "field": "success_criteria", "clarity_before": 20, "clarity_after": 30}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "answer_recorded", "field": "success_criteria", "clarity_before": 30, "clarity_after": 40}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "answer_recorded", "field": "deliverables", "clarity_before": 40, "clarity_after": 55}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "answer_recorded", "field": "problem", "clarity_before": 55, "clarity_after": 70}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "answer_recorded", "field": "expected_result", "clarity_before": 70, "clarity_after": 80}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "state_transition", "from": "discovery", "to": "validation", "reason": "uncertainty low enough"}
+{"ts": "2026-11-02T14:57:58+00:00", "type": "summary_presented", "clarity": 80}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "summary_rejected", "reason": "Falta aclarar las restricciones"}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "state_transition", "from": "validation", "to": "discovery", "reason": "rejected: Falta aclarar las restricciones"}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "answer_recorded", "field": "constraints", "clarity_before": 80, "clarity_after": 90}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "state_transition", "from": "discovery", "to": "validation", "reason": "uncertainty low enough"}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "summary_presented", "clarity": 90}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "summary_approved", "clarity": 90}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "state_transition", "from": "validation", "to": "prd_generation", "reason": "summary approved by the user"}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "prd_generated", "version": 1, "issues": []}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "state_transition", "from": "prd_generation", "to": "prd_review", "reason": "PRD generated and passed the quality gate"}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "prd_approved"}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "state_transition", "from": "prd_review", "to": "completed", "reason": "PRD approved by the user"}
+{"ts": "2026-11-02T14:57:59+00:00", "type": "initialization_completed"}

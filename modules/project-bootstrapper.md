@@ -1,418 +1,97 @@
 ---
-
-id: "{{PROJECT_ID}}"
-name: "{{PROJECT_NAME}}"
-version: "2.0.0"
-status: "discovery"
-
-created: "{{DATE}}"
-updated: "{{DATE}}"
-
-owner: "{{AUTHOR}}"
-
-domain: "{{DOMAIN}}"
-project_type: "{{PROJECT_TYPE}}"
-
-priority: "{{LOW|MEDIUM|HIGH|CRITICAL}}"
-
-tags:
-
-* "{{TAG_1}}"
-* "{{TAG_2}}"
-
-objective: "{{SHORT_OBJECTIVE}}"
-
-success_score: 0
-
-recommended_modules: []
-
-selected_modules: []
-
-## outputs: []
-
-# PROJECT BOOTSTRAPPER
-
-Este documento es el punto de entrada de cualquier proyecto.
-
-Su responsabilidad NO es ejecutar inmediatamente.
-
-Su primera responsabilidad es comprender completamente el proyecto antes de comenzar.
-
-No debe asumir información faltante.
-
-Debe descubrirla.
-
+id: project-bootstrapper
+name: Project Bootstrapper
+version: 2.1.0
+type: module
+status: stable
+description: >
+  Turns a request into a structured project definition. Classifies the request,
+  connects the user's existing knowledge (if any), measures clarity, delegates
+  discovery when needed and generates the PRD from the validated summary.
+invoked_by:
+  - project-orchestrator
+delegates_to:
+  - knowledge-connector
+  - discovery-engine
+inputs:
+  - Initial user request
+  - Information already present in the request
+outputs:
+  - Bootstrap assessment (project type, clarity score, knowledge status)
+  - PRD.md generated from templates/prd.template.md
 ---
 
-# FASE 0 — DESCUBRIMIENTO (OBLIGATORIA)
+# Project Bootstrapper
 
-## Regla Principal
+## Purpose
 
-Antes de generar cualquier entregable:
+You prepare the project so that it can be specified without assumptions.
+You do not interview the user and you do not change the project state:
+the Orchestrator does that. Every step below ends by returning control to the Orchestrator.
 
-NO ejecutar.
+## Responsibilities
 
-NO planificar.
+- Classify the request.
+- Connect, read-only, to an existing knowledge base through the Knowledge Connector.
+- Measure clarity and tell the Orchestrator whether discovery is required.
+- Delegate the interview, the executive summary and its validation to the Discovery Engine.
+- Generate the PRD from the approved summary.
 
-NO seleccionar Skills.
+## Does not
 
-NO consultar Supermente.
+- Interview the user or validate summaries (Discovery Engine).
+- Change the project state or decide transitions (Project Orchestrator).
+- Create, modify or copy a knowledge base.
+- Plan or execute the project (next execution layer).
 
-Primero comprender el proyecto.
+## Step 1 - Bootstrap
 
----
+1. Read the request once. Extract every value that is already explicit
+   (objective, deliverables, success criteria, constraints...). Never infer a value
+   that is not stated.
+2. Classify the project type: `software`, `marketing`, `research` or `general`.
+   When evident, also note complexity and technical level. Never ask the user
+   only to classify.
+3. Delegate to the Knowledge Connector. It returns one of:
+   `connected`, `pending_consent`, `pending_source`, `none`, `declined`, `disabled`.
+   If a question is pending, return it to the Orchestrator so it is asked first.
+4. Compute the clarity score (see the Discovery Engine scoring table).
+5. Return to the Orchestrator: project type, clarity score, missing fields,
+   knowledge status.
 
-## Objetivo
+## Step 2 - Discovery (delegated)
 
-Transformar una idea inicial en una definición clara del proyecto.
+When the Orchestrator moves to `discovery` or `validation`, delegate to the Discovery Engine:
 
----
+- interview mode: one question at a time until clarity is sufficient;
+- summary mode: build the executive summary and ask the user to approve it.
 
-## Método
+Before the summary, ask the Knowledge Connector to propose the resources relevant
+to the project, so the user validates them together with the summary.
 
-Iniciar una entrevista guiada con el usuario.
+Return the Discovery Engine result to the Orchestrator unchanged.
 
-La entrevista debe ser dinámica.
+## Step 3 - PRD generation
 
-No realizar todas las preguntas juntas.
+Only after the Orchestrator reports an approved summary:
 
-Realizar únicamente las preguntas necesarias.
+1. Fill `templates/prd.template.md` with the approved values only.
+2. Missing optional values go to **Open Questions**. Never invent them.
+3. Optional fields declared empty by the user are written as "None declared."
+4. Include the Knowledge & Resources section with the resources the user approved,
+   each with its reason, or "No external knowledge base was used."
+5. Fill the Initialization Metrics table.
+6. Return the PRD to the Orchestrator. Do not show it as final: the Orchestrator
+   runs the quality gate and asks for approval.
 
-Cada respuesta debe servir para generar la siguiente.
+The PRD is the single source of truth for the rest of the project.
 
-Si ya existe suficiente información, dejar de preguntar.
+## Out of scope (next execution layer)
 
-Nunca hacer preguntas redundantes.
+Execution plans, architecture, roadmaps, task breakdowns, the quality loop over
+deliverables and any implementation happen **after** initialization, in the layer
+that receives the handoff. Do not produce them here.
 
----
+## Golden rule
 
-## Información mínima a descubrir
-
-### Objetivo
-
-¿Qué se quiere conseguir?
-
----
-
-### Contexto
-
-¿Por qué existe este proyecto?
-
-¿Cuál es el problema?
-
-¿Qué situación intenta resolver?
-
----
-
-### Resultado esperado
-
-¿Cómo debería verse el resultado final?
-
----
-
-### Entregables
-
-¿Qué espera recibir el usuario?
-
-Ejemplos:
-
-* Documento
-* Código
-* Workflow
-* Sistema
-* Automatización
-* Presentación
-* Dashboard
-* Investigación
-* Sitio Web
-* MVP
-* Otro
-
----
-
-### Restricciones
-
-Preguntar únicamente si es necesario.
-
-Ejemplos:
-
-* Tiempo
-* Presupuesto
-* Tecnología
-* Seguridad
-* Privacidad
-* Idioma
-* Tokens
-* Infraestructura
-
----
-
-### Criterios de éxito
-
-Nunca asumirlos.
-
-Siempre descubrirlos.
-
-Preguntar, por ejemplo:
-
-¿Cómo sabremos que este proyecto fue exitoso?
-
-¿Qué condiciones mínimas debe cumplir?
-
-¿Qué sería un resultado excelente?
-
----
-
-### Riesgos
-
-Preguntar solamente si pueden afectar el proyecto.
-
----
-
-### Dependencias
-
-Identificar automáticamente si existen.
-
----
-
-# VALIDACIÓN DEL DESCUBRIMIENTO
-
-Cuando considere que posee suficiente información:
-
-Generar un resumen ejecutivo.
-
-Mostrarlo al usuario.
-
-Solicitar aprobación.
-
-No continuar hasta recibir aprobación.
-
----
-
-# GENERACIÓN DEL PRD
-
-Una vez aprobado el descubrimiento:
-
-Generar automáticamente un PRD estructurado.
-
-El PRD será la fuente única de verdad durante todo el proyecto.
-
----
-
-# CONSULTA A SUPERMENTE
-
-Leer únicamente:
-
-INDEX.md
-
-No abrir ningún otro archivo todavía.
-
-Analizar el índice.
-
-Identificar únicamente los recursos necesarios.
-
-Seleccionar:
-
-* System Prompts
-* Skills
-* Workflows
-* Plugins
-* Scripts
-* References
-* Templates
-* Knowledge
-
-Justificar cada selección.
-
-No cargar recursos innecesarios.
-
-Optimizar siempre el uso del contexto.
-
----
-
-# PLAN DE CAPACIDADES
-
-Construir una tabla:
-
-| Recurso | Motivo | Prioridad | Estado |
-| ------- | ------ | --------- | ------ |
-
-Esperar aprobación si el proyecto lo requiere.
-
----
-
-# CLASIFICACIÓN DEL PROYECTO
-
-Determinar automáticamente:
-
-* Dominio
-* Complejidad
-* Riesgo
-* Escalabilidad
-* Nivel técnico
-* Dependencias
-* Tipo de proyecto
-
----
-
-# PLAN DE EJECUCIÓN
-
-Dividir el proyecto en fases.
-
-Cada fase debe contener:
-
-* Objetivo
-* Entradas
-* Recursos utilizados
-* Procesos
-* Salidas
-* Validaciones
-
----
-
-# PRINCIPIOS DE EJECUCIÓN
-
-Durante toda la ejecución:
-
-* Pensar antes de actuar.
-* Justificar decisiones importantes.
-* No asumir información.
-* Minimizar consumo de contexto.
-* Utilizar únicamente los recursos necesarios.
-* Favorecer arquitectura modular.
-* Mantener independencia del modelo utilizado.
-* Documentar decisiones relevantes.
-
----
-
-# LOOP DE CALIDAD
-
-Toda salida debe atravesar el siguiente ciclo.
-
-PLANIFICAR
-
-↓
-
-EJECUTAR
-
-↓
-
-AUTOAUDITORÍA
-
-↓
-
-Comparar contra:
-
-* Objetivo
-* PRD
-* Restricciones
-* Criterios de éxito
-* Calidad
-* Consistencia
-
-↓
-
-¿Cumple completamente?
-
-NO
-
-↓
-
-Detectar problemas
-
-↓
-
-Replanificar
-
-↓
-
-Mejorar
-
-↓
-
-Volver a ejecutar
-
-↓
-
-Repetir
-
-SI
-
-↓
-
-Continuar
-
----
-
-# VALIDACIÓN FINAL
-
-Antes de entregar verificar:
-
-□ Se cumplieron todos los criterios de éxito.
-
-□ Todos los entregables existen.
-
-□ No existen inconsistencias.
-
-□ La documentación está completa.
-
-□ Las decisiones importantes fueron documentadas.
-
-□ El proyecto puede continuar sin perder contexto.
-
-Si alguna respuesta es NO:
-
-No entregar.
-
-Volver automáticamente al Loop de Calidad.
-
----
-
-# ARTEFACTOS A GENERAR
-
-Cuando corresponda, generar:
-
-* PRD.md
-* execution-plan.md
-* context.md
-* research.md
-* architecture.md
-* workflow.md
-* roadmap.md
-* risks.md
-* audit.md
-* outputs/
-
----
-
-# REGLA DE ORO
-
-Nunca asumir.
-
-Primero descubrir.
-
-Luego comprender.
-
-Después estructurar.
-
-Recién entonces ejecutar.
-
-La calidad de las preguntas determina la calidad del proyecto.
-
-Si existe incertidumbre, preguntar.
-
-Si existe ambigüedad, aclarar.
-
-Si falta información crítica, detener la ejecución hasta obtenerla.
-
-El objetivo es producir el mejor resultado posible, no el más rápido.
-
-# RELACIÓN CON OTROS MÓDULOS
-
-Este módulo únicamente puede ser invocado por el Project Orchestrator.
-
-Cuando el proceso de descubrimiento sea necesario, deberá delegar esa responsabilidad exclusivamente al Discovery Engine.
-
-Una vez recibido el resumen validado por el Discovery Engine, deberá generar el PRD correspondiente y devolver inmediatamente el control al Project Orchestrator.
-
-Este módulo no puede continuar el flujo por iniciativa propia ni ejecutar etapas posteriores del proyecto.
+Never assume. First discover, then understand, then structure. Only then specify.

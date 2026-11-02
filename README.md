@@ -1,259 +1,183 @@
 # Project Initialization Framework
 
-> A modular, orchestration-driven framework for initializing projects through structured discovery, adaptive validation, and automated PRD generation. Designed as a model-agnostic foundation for AI-assisted project execution.
+> Framework modular para inicializar proyectos asistidos por IA: descubre lo que falta,
+> mide la incertidumbre, valida con el usuario y recién entonces genera un PRD aprobado.
+> Es independiente del modelo (Claude, GPT, Gemini, etc.).
 
-> **Note:** This repository contains no executable code. It's a Markdown specification meant to be given to an AI agent (Claude, GPT, etc.) as context — a methodology for the agent to follow before starting a project, not a piece of software to install or run.
----
+El repositorio tiene dos partes:
 
-# Why this project exists
+1. **Instrucciones para agentes de IA** (en inglés): `AGENTS.md`, `modules/` y `templates/`.
+   Un agente que abre este repo las lee y sabe cómo coordinar la inicialización.
+2. **Implementación de referencia** (Python, sin dependencias): `pif/`. Hace cumplir las reglas
+   en código: máquina de estados, puntaje de incertidumbre, conexión opcional a tu base de
+   conocimiento, generación y control de calidad del PRD, y métricas.
 
-Most AI-assisted projects don't fail because of poor implementation.
-
-They fail because execution begins before the problem is fully understood.
-
-Incomplete requirements, hidden assumptions, vague objectives, and missing constraints inevitably lead to poor planning, wasted iterations, and low-quality results.
-
-This framework addresses that problem by introducing a structured initialization process before any planning or execution begins.
-
-Instead of immediately generating solutions, the framework progressively discovers, validates, and structures the project until uncertainty has been reduced to an acceptable level.
-
-Only then is the project considered ready for execution.
+La documentación para personas (este README y `docs/`) está en español y sirve solo como guía.
 
 ---
 
-# Philosophy
+## Por qué existe
 
-The framework is built around one simple principle:
+La mayoría de los proyectos con IA no fallan por la implementación: fallan porque se empieza a
+ejecutar antes de entender el problema. Requisitos incompletos, supuestos ocultos y objetivos
+vagos llevan a planes malos y a iteraciones perdidas.
 
-> **The quality of a project is determined long before the first task is executed.**
+El framework agrega una etapa previa obligatoria:
 
-Every component exists to answer one question:
-
-> **"Do we understand the problem well enough to move forward?"**
-
-If the answer is **no**, the framework continues discovering.
-
-If the answer is **yes**, the project becomes execution-ready.
+> **Nunca ejecutar antes de entender el problema.**
 
 ---
 
-# Core Principles
+## Cómo usarlo
 
-- Discovery before execution
-- Validation before progression
-- Never assume missing information
-- Reduce uncertainty as early as possible
-- Single-responsibility components
-- Deterministic orchestration
-- Explicit state transitions
-- Model-agnostic architecture
-- Minimal context consumption
-- Modular and extensible design
+### Opción A: con un agente de IA (uso principal)
 
----
+1. Cloná el repo.
+2. Abrilo con tu agente (Claude Code lee `CLAUDE.md`, otros agentes leen `AGENTS.md`).
+3. Pedile: *"Inicializá un proyecto nuevo: quiero …"*.
 
-# Architecture
+El agente toma el rol de Orchestrator, te hace una pregunta por vez, te muestra un resumen
+para aprobar y genera el PRD. Si tenés Python instalado, usa la CLI `pif` para guardar el estado
+y medir el proceso.
 
-```text
-                         User
-                           │
-                           ▼
-              Project Orchestrator
-                           │
-                 delegates initialization
-                           ▼
-             Project Bootstrapper
-                           │
-             Discovery required?
-                 │                  │
-                No                 Yes
-                 │                  ▼
-                 │         Discovery Engine
-                 │                  │
-                 └──────────┬───────┘
-                            ▼
-             Project Bootstrapper
-                            │
-                     Generate PRD
-                            │
-                            ▼
-              Project Orchestrator
-                            │
-                  Validate Completion
-                            │
-                            ▼
-                  Project Initialized
+### Opción B: en la terminal
+
+```bash
+python -m pif run "Quiero una plataforma SaaS para diseñadores freelance"
 ```
 
-The Project Orchestrator owns the lifecycle of every initialization request.
+### Opción C: paso a paso (lo que usa el agente)
 
-Components never continue the workflow autonomously.
-
-Each component completes its responsibility and immediately returns control to the component that invoked it.
-
----
-
-# Initialization Lifecycle
-
-The initialization process follows a deterministic sequence:
-
-```text
-User Request
-
-↓
-
-Project Orchestrator
-
-↓
-
-Delegate to Project Bootstrapper
-
-↓
-
-Project Assessment
-
-↓
-
-Adaptive Discovery (if required)
-
-↓
-
-Project Validation
-
-↓
-
-PRD Generation
-
-↓
-
-Initialization Complete
+```bash
+python -m pif --dir .pif start "Quiero una plataforma SaaS para diseñadores freelance"
+python -m pif --dir .pif answer knowledge_source "no"
+python -m pif --dir .pif answer success_criteria "100 usuarios pagos en 6 meses"
+python -m pif --dir .pif status     # muestra la próxima pregunta y el puntaje
+python -m pif --dir .pif approve    # aprueba el resumen y después el PRD
+python -m pif --dir .pif metrics --format md
 ```
 
-Every stage reduces uncertainty before allowing the next one to begin.
+Requisitos: Python 3.9 o superior. No hace falta instalar nada. Opcional: `pip install -e .`
+para tener el comando `pif`.
 
-The framework never skips validation and never executes projects based on assumptions.
+Tests: `python -m unittest discover -s tests`.
 
 ---
 
-# Repository Structure
+## Arquitectura
+
+```text
+Usuario
+  │
+  ▼
+Project Orchestrator ── único dueño del estado
+  │ delega
+  ▼
+Project Bootstrapper ── clasifica, mide claridad, genera el PRD
+  │                 │
+  ▼                 ▼
+Knowledge Connector  Discovery Engine
+(tu base de          (entrevista adaptativa,
+ conocimiento,        resumen y validación)
+ solo lectura)
+```
+
+Cada módulo hace una sola cosa y devuelve el control a quien lo llamó.
+Detalle en [docs/arquitectura.md](docs/arquitectura.md).
+
+## Estados
+
+```text
+waiting → bootstrap → discovery → validation → prd_generation → prd_review → completed
+                  └──────────────→ validation        (si ya hay información suficiente)
+          validation / prd_review → discovery        (si el usuario pide cambios)
+          cualquier estado activo → cancelled | error  (error se reanuda desde el último estado válido)
+```
+
+El descubrimiento puede saltearse; la validación nunca. Ver
+[docs/maquina-de-estados.md](docs/maquina-de-estados.md).
+
+## Conexión con tu base de conocimiento
+
+Si ya tenés un "segundo cerebro", una bóveda de notas, un grafo de conocimiento o una carpeta con
+system prompts y skills, el framework lo detecta (o te pregunta dónde está), te pide permiso y lo
+consulta **solo en modo lectura**. Así arranca desde lo que ya sabés y desde tu forma de trabajar.
+Si no tenés nada, lo ignora por completo. Nunca crea una base nueva.
+Ver [docs/conector-de-conocimiento.md](docs/conector-de-conocimiento.md).
+
+## Medición
+
+La incertidumbre se mide con un puntaje de claridad de 0 a 100. El descubrimiento termina con
+80 puntos o más y los campos críticos completos. Cada paso queda registrado y se puede ver un
+reporte de métricas con objetivos. Ver [docs/medicion.md](docs/medicion.md).
+
+---
+
+## Estructura del repositorio
 
 ```text
 .
+├── AGENTS.md                  instrucciones para agentes de IA (inglés)
+├── CLAUDE.md                  apunta a AGENTS.md
 ├── README.md
-├── LICENSE
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
-│
-├── docs/
-│   ├── Architecture.md
-│   ├── Execution-Flow.md
-│   ├── Module-Responsibilities.md
-│   ├── State-Machine.md
-│   ├── Design-Principles.md
-│   └── Examples/
-│
-├── modules/
+├── LICENSE
+├── pyproject.toml
+├── modules/                   roles del framework (inglés)
 │   ├── project-orchestrator.md
 │   ├── project-bootstrapper.md
-│   └── discovery-engine.md
-│
+│   ├── discovery-engine.md
+│   └── knowledge-connector.md
+├── templates/                 plantillas que completa la IA (inglés)
+│   ├── prd.template.md
+│   ├── executive-summary.template.md
+│   ├── project-state.schema.json
+│   └── knowledge.config.example.json
+├── pif/                       implementación de referencia (Python)
+├── tests/
+├── docs/                      guía para personas (español)
+│   ├── arquitectura.md
+│   ├── flujo-de-ejecucion.md
+│   ├── maquina-de-estados.md
+│   ├── responsabilidades-de-modulos.md
+│   ├── principios-de-diseno.md
+│   ├── conector-de-conocimiento.md
+│   ├── medicion.md
+│   └── implementacion.md
 └── examples/
-    ├── software-project-workflow.md
-    ├── marketing-project-workflow.md
-    └── research-project-workflow.md
+    ├── flujo-proyecto-software.md
+    ├── flujo-proyecto-marketing.md
+    ├── flujo-proyecto-investigacion.md
+    ├── sample-knowledge-base/     base de conocimiento de ejemplo
+    └── sample-run/                salida real de una inicialización
 ```
 
----
+## Convención de idiomas
 
-# Components
+| Qué | Idioma |
+| --- | --- |
+| Instrucciones para la IA (`AGENTS.md`, `modules/`, `templates/`) | Inglés |
+| Código y comentarios (`pif/`, `tests/`) | Inglés |
+| Documentación para personas (`README.md`, `docs/`, `examples/*.md`, `CONTRIBUTING.md`, `CHANGELOG.md`) | Español |
 
-| Component | Responsibility |
-|------------|----------------|
-| Project Orchestrator | Controls the initialization lifecycle and coordinates every stage |
-| Project Bootstrapper | Initializes the project and generates the PRD after validation |
-| Discovery Engine | Reduces uncertainty through adaptive discovery and validation |
+El agente le habla al usuario en su idioma, aunque las instrucciones estén en inglés.
 
-Each component owns a single responsibility.
+## Componentes
 
-No component performs work outside its defined scope.
+| Estado | Componente | Responsabilidad |
+| --- | --- | --- |
+| ✅ | Project Orchestrator | Controla el ciclo de vida y el estado |
+| ✅ | Project Bootstrapper | Clasifica, mide claridad y genera el PRD |
+| ✅ | Discovery Engine | Entrevista adaptativa, resumen y validación |
+| ✅ | Knowledge Connector | Consulta opcional de tu base de conocimiento |
 
-The Project Orchestrator is the only component responsible for coordinating the overall workflow.
+## Hoja de ruta
 
----
+Componentes posibles para la capa que recibe el PRD: Research Engine, Architecture Generator,
+Risk Analyzer, Task Planner, Workflow Generator, Execution Orchestrator y QA & Audit Engine.
+Se agregan sin cambiar las responsabilidades de los módulos actuales.
 
-# Design Goals
+## Licencia
 
-- Modular
-- Deterministic
-- Extensible
-- AI-native
-- Model agnostic
-- Production-oriented
-- Low context overhead
-- Clear responsibility boundaries
-- Easy integration into larger orchestration systems
-
----
-
-# Current Components
-
-| Status | Component |
-|---------|-----------|
-| ✅ | Project Orchestrator |
-| ✅ | Project Bootstrapper |
-| ✅ | Discovery Engine |
-
----
-
-# Planned Roadmap
-
-Future components may include:
-
-- Research Engine
-- Knowledge Loader
-- Architecture Generator
-- Risk Analyzer
-- Task Planner
-- Workflow Generator
-- Execution Orchestrator
-- QA & Audit Engine
-
-The architecture is intentionally modular, allowing new components to be introduced without changing the responsibilities of existing ones.
-
----
-
-# Documentation
-
-Additional documentation is available in the `/docs` directory.
-
-- Architecture
-- Execution Flow
-- Module Responsibilities
-- State Machine
-- Design Principles
-- Examples
-- Contribution Guide
-
----
-
-# Guiding Principle
-
-The framework is built around a single rule:
-
-> **Never execute before understanding the problem.**
-
-Discovery reduces uncertainty.
-
-Validation confirms understanding.
-
-Initialization establishes the project's foundation.
-
-Execution becomes the consequence of a validated project definition—not its starting point.
-
----
-
-# License
-
-This project is released under the MIT License.
-
-See the `LICENSE` file for details.
+MIT. Ver `LICENSE`.

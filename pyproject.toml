@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-initialization-framework"
+version = "2.1.0"
+description = "Reference implementation of the Project Initialization Framework (state machine, uncertainty score, knowledge connector, PRD quality gate, metrics)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = []
+
+[project.scripts]
+pif = "pif.cli:main"
+
+[tool.setuptools]
+packages = ["pif"]
