@@ -1,0 +1,95 @@
+{
+  "framework": "project-initialization-framework",
+  "framework_version": "2.1.0",
+  "project": {
+    "id": "plataforma-para-disenadores-freelance-2026-11-02",
+    "name": "Plataforma para diseñadores freelance",
+    "type": "software"
+  },
+  "state": "completed",
+  "prd": "examples/sample-run/output/PRD.md",
+  "executive_summary": "examples/sample-run/output/executive-summary.md",
+  "clarity": 90,
+  "open_questions": [
+    "context",
+    "risks"
+  ],
+  "knowledge": {
+    "status": "connected",
+    "sources": [
+      "examples/sample-knowledge-base",
+      "examples/sample-knowledge-base/graph.json"
+    ],
+    "selected_resources": [
+      {
+        "resource": "SYSTEM.md",
+        "kind": "system_prompt",
+        "path": "examples/sample-knowledge-base/SYSTEM.md",
+        "reason": "global working instructions of the user",
+        "priority": "high",
+        "status": "approved"
+      },
+      {
+        "resource": "saas-mvp-scoping",
+        "kind": "skill",
+        "path": "examples/sample-knowledge-base/skills/saas-mvp-scoping/SKILL.md",
+        "reason": "matches: saas, freelance, portal",
+        "priority": "high",
+        "status": "approved"
+      },
+      {
+        "resource": "launch-checklist",
+        "kind": "workflow",
+        "path": "examples/sample-knowledge-base/workflows/launch-checklist.md",
+        "reason": "matches: freelance, beta",
+        "priority": "medium",
+        "status": "approved"
+      },
+      {
+        "resource": "Freelance designers",
+        "kind": "knowledge",
+        "path": "examples/sample-knowledge-base/graph.json#n1",
+        "reason": "matches: freelance",
+        "priority": "low",
+        "status": "approved"
+      },
+      {
+        "resource": "freelance-designers-interviews",
+        "kind": "knowledge",
+        "path": "examples/sample-knowledge-base/knowledge/freelance-designers-interviews.md",
+        "reason": "matches: freelance",
+        "priority": "low",
+        "status": "approved"
+      },
+      {
+        "resource": "product-manager",
+        "kind": "system_prompt",
+        "path": "examples/sample-knowledge-base/system-prompts/product-manager.md",
+        "reason": "matches: saas",
+        "priority": "low",
+        "status": "approved"
+      }
+    ]
+  },
+  "metrics": {
+    "project": "Plataforma para diseñadores freelance",
+    "state": "completed",
+    "project_type": "software",
+    "clarity_initial": 20,
+    "clarity_final": 90,
+    "questions_answered": 6,
+    "clarity_gain_per_question": 11.7,
+    "discovery_skipped": false,
+    "validation_rounds": 2,
+    "summary_rejections": 1,
+    "prd_generations": 1,
+    "prd_rejections": 0,
+    "module_errors": 0,
+    "seconds_to_first_prd": 1,
+    "seconds_to_completion": 1,
+    "knowledge_status": "connected",
+    "knowledge_sources": 2,
+    "resources_selected": 6
+  },
+  "completed_at": "2026-11-02T14:57:59+00:00"
+}

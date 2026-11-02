@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project Initialization State",
+  "description": "State file kept by the Project Orchestrator (.pif/state.json). Agents without Python maintain it by hand with the same shape.",
+  "type": "object",
+  "required": ["id", "name", "request", "state", "last_valid_state", "fields", "knowledge", "counters", "history"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "request": { "type": "string", "description": "The user's original request, verbatim." },
+    "project_type": { "enum": ["software", "marketing", "research", "general"] },
+    "state": {
+      "enum": ["waiting", "bootstrap", "discovery", "validation", "prd_generation", "prd_review", "completed", "cancelled", "error"]
+    },
+    "last_valid_state": { "type": "string", "description": "State to resume after an error." },
+    "created": { "type": "string", "format": "date-time" },
+    "updated": { "type": "string", "format": "date-time" },
+    "fields": {
+      "type": "object",
+      "description": "Discovery answers. Use 'none' for optional fields the user declared empty.",
+      "properties": {
+        "objective": { "type": "string" },
+        "problem": { "type": "string" },
+        "deliverables": { "type": "string" },
+        "success_criteria": { "type": "string" },
+        "expected_result": { "type": "string" },
+        "constraints": { "type": "string" },
+        "context": { "type": "string" },
+        "risks": { "type": "string" },
+        "dependencies": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "knowledge": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": ["unknown", "pending_source", "pending_consent", "connected", "none", "declined", "disabled"]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "location"],
+            "properties": {
+              "type": { "enum": ["markdown", "json-graph", "neo4j"] },
+              "location": { "type": "string" },
+              "origin": { "enum": ["explicit", "config", "env", "auto"] }
+            }
+          }
+        },
+        "selected_resources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["resource", "kind", "reason", "priority", "status"],
+            "properties": {
+              "resource": { "type": "string" },
+              "kind": { "type": "string" },
+              "path": { "type": "string" },
+              "reason": { "type": "string" },
+              "priority": { "enum": ["high", "medium", "low"] },
+              "status": { "enum": ["proposed", "approved", "rejected"] }
+            }
+          }
+        },
+        "snippets": { "type": "array" }
+      }
+    },
+    "counters": {
+      "type": "object",
+      "properties": {
+        "questions_answered": { "type": "integer", "minimum": 0 },
+        "validation_rounds": { "type": "integer", "minimum": 0 },
+        "summary_rejections": { "type": "integer", "minimum": 0 },
+        "prd_generations": { "type": "integer", "minimum": 0 },
+        "prd_rejections": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "at"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "at": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "initial_clarity": { "type": ["integer", "null"] },
+    "error": { "type": ["string", "null"] }
+  }
+}

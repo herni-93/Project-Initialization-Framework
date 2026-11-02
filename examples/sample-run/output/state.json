@@ -1,0 +1,181 @@
+{
+  "id": "plataforma-para-disenadores-freelance-2026-11-02",
+  "name": "Plataforma para diseñadores freelance",
+  "request": "Quiero construir una plataforma SaaS para diseñadores freelance",
+  "project_type": "software",
+  "state": "completed",
+  "last_valid_state": "completed",
+  "created": "2026-11-02T14:57:58+00:00",
+  "updated": "2026-11-02T14:57:59+00:00",
+  "fields": {
+    "objective": "Quiero construir una plataforma SaaS para diseñadores freelance",
+    "success_criteria": "Que los usuarios la usen; 100 diseñadores pagando la suscripción dentro de los 6 meses del lanzamiento",
+    "deliverables": "MVP web con portfolio, facturación y portal de clientes",
+    "problem": "Los diseñadores freelance usan entre 4 y 6 herramientas para gestionar clientes y facturas",
+    "expected_result": "Aplicación web desplegada y usada por un grupo de diseñadores beta",
+    "constraints": "Presupuesto máximo de 5000 USD; lanzamiento antes de marzo 2027"
+  },
+  "knowledge": {
+    "status": "connected",
+    "sources": [
+      {
+        "type": "markdown",
+        "location": "examples/sample-knowledge-base",
+        "origin": "explicit"
+      },
+      {
+        "type": "json-graph",
+        "location": "examples/sample-knowledge-base/graph.json",
+        "origin": "explicit"
+      }
+    ],
+    "selected_resources": [
+      {
+        "resource": "SYSTEM.md",
+        "kind": "system_prompt",
+        "path": "examples/sample-knowledge-base/SYSTEM.md",
+        "reason": "global working instructions of the user",
+        "priority": "high",
+        "status": "approved"
+      },
+      {
+        "resource": "saas-mvp-scoping",
+        "kind": "skill",
+        "path": "examples/sample-knowledge-base/skills/saas-mvp-scoping/SKILL.md",
+        "reason": "matches: saas, freelance, portal",
+        "priority": "high",
+        "status": "approved"
+      },
+      {
+        "resource": "launch-checklist",
+        "kind": "workflow",
+        "path": "examples/sample-knowledge-base/workflows/launch-checklist.md",
+        "reason": "matches: freelance, beta",
+        "priority": "medium",
+        "status": "approved"
+      },
+      {
+        "resource": "Freelance designers",
+        "kind": "knowledge",
+        "path": "examples/sample-knowledge-base/graph.json#n1",
+        "reason": "matches: freelance",
+        "priority": "low",
+        "status": "approved"
+      },
+      {
+        "resource": "freelance-designers-interviews",
+        "kind": "knowledge",
+        "path": "examples/sample-knowledge-base/knowledge/freelance-designers-interviews.md",
+        "reason": "matches: freelance",
+        "priority": "low",
+        "status": "approved"
+      },
+      {
+        "resource": "product-manager",
+        "kind": "system_prompt",
+        "path": "examples/sample-knowledge-base/system-prompts/product-manager.md",
+        "reason": "matches: saas",
+        "priority": "low",
+        "status": "approved"
+      }
+    ],
+    "snippets": [
+      {
+        "title": "Freelance designers interviews",
+        "path": "examples/sample-knowledge-base/knowledge/freelance-designers-interviews.md",
+        "excerpt": "Notes from 12 interviews with freelance designers: invoicing and client",
+        "score": 5
+      },
+      {
+        "title": "SaaS MVP Scoping",
+        "path": "examples/sample-knowledge-base/skills/saas-mvp-scoping/SKILL.md",
+        "excerpt": "Scope a SaaS MVP for freelancers - core features, invoicing, client portal.",
+        "score": 5
+      },
+      {
+        "title": "saas-mvp-scoping",
+        "path": "examples/sample-knowledge-base/graph.json#n2",
+        "excerpt": "Skill to scope a SaaS MVP for freelancers. | related: Freelance designers",
+        "score": 5
+      },
+      {
+        "title": "Freelance designers",
+        "path": "examples/sample-knowledge-base/graph.json#n1",
+        "excerpt": "Segment: freelance designers that manage clients and invoicing alone. | related: Invoicing pain, saas-mvp-scoping",
+        "score": 4
+      },
+      {
+        "title": "Product Manager",
+        "path": "examples/sample-knowledge-base/system-prompts/product-manager.md",
+        "excerpt": "You act as a pragmatic product manager for SaaS products...",
+        "score": 2
+      }
+    ]
+  },
+  "counters": {
+    "questions_answered": 6,
+    "validation_rounds": 2,
+    "summary_rejections": 1,
+    "prd_generations": 1,
+    "prd_rejections": 0
+  },
+  "notes": [
+    {
+      "at": "2026-11-02T14:57:59+00:00",
+      "stage": "validation",
+      "reason": "Falta aclarar las restricciones"
+    }
+  ],
+  "history": [
+    {
+      "from": "waiting",
+      "to": "bootstrap",
+      "at": "2026-11-02T14:57:58+00:00",
+      "reason": "request received"
+    },
+    {
+      "from": "bootstrap",
+      "to": "discovery",
+      "at": "2026-11-02T14:57:58+00:00",
+      "reason": "uncertainty too high: discovery required"
+    },
+    {
+      "from": "discovery",
+      "to": "validation",
+      "at": "2026-11-02T14:57:58+00:00",
+      "reason": "uncertainty low enough"
+    },
+    {
+      "from": "validation",
+      "to": "discovery",
+      "at": "2026-11-02T14:57:59+00:00",
+      "reason": "rejected: Falta aclarar las restricciones"
+    },
+    {
+      "from": "discovery",
+      "to": "validation",
+      "at": "2026-11-02T14:57:59+00:00",
+      "reason": "uncertainty low enough"
+    },
+    {
+      "from": "validation",
+      "to": "prd_generation",
+      "at": "2026-11-02T14:57:59+00:00",
+      "reason": "summary approved by the user"
+    },
+    {
+      "from": "prd_generation",
+      "to": "prd_review",
+      "at": "2026-11-02T14:57:59+00:00",
+      "reason": "PRD generated and passed the quality gate"
+    },
+    {
+      "from": "prd_review",
+      "to": "completed",
+      "at": "2026-11-02T14:57:59+00:00",
+      "reason": "PRD approved by the user"
+    }
+  ],
+  "initial_clarity": 20,
+  "error": null
+}
